@@ -1624,10 +1624,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
 
       # WASM_ASYNC_COMPILATION and SWAPPABLE_ASM_MODULE do not have a meaning in MINIMAL_RUNTIME (always async)
       if not shared.Settings.MINIMAL_RUNTIME:
-        if shared.Settings.WASM_ASYNC_COMPILATION == 1:
-          # async compilation requires a swappable module - we swap it in when it's ready
-          shared.Settings.SWAPPABLE_ASM_MODULE = 1
-        else:
+        if shared.Settings.WASM_ASYNC_COMPILATION and shared.Settings.WASM2JS:
           # if not wasm-only, we can't do async compilation as the build can run in other
           # modes than wasm (like asm.js) which may not support an async step
           shared.Settings.WASM_ASYNC_COMPILATION = 0
@@ -1636,6 +1633,10 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
             shared.warning('WASM_ASYNC_COMPILATION requested, but disabled because of user options. ' + warning)
           elif 'WASM_ASYNC_COMPILATION=0' not in settings_changes and 'BINARYEN_ASYNC_COMPILATION=0' not in settings_changes:
             shared.warning('WASM_ASYNC_COMPILATION disabled due to user options. ' + warning)
+
+        if shared.Settings.WASM_ASYNC_COMPILATION:
+          # async compilation requires a swappable module - we swap it in when it's ready
+          shared.Settings.SWAPPABLE_ASM_MODULE = 1
 
       if not shared.Settings.DECLARE_ASM_MODULE_EXPORTS:
         # Swappable wasm module/asynchronous wasm compilation requires an indirect stub
